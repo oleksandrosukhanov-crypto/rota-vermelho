@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Rota · Vasco da Gama · Vermelho Melides</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #c9a84c;
+    --gold-dim: #7a6030;
+    --accent: #b5601a;
+    --deep: #060508;
+    --cream: #f0e8d8;
+    --muted: #8a7060;
+  }
+  html, body { width: 100%; height: 100%; background: var(--deep); color: var(--cream); font-family: 'Cormorant Garamond', Georgia, serif; overflow-x: hidden; }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(181,96,26,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .page { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px 60px; }
+  .header { text-align: center; margin-bottom: 36px; animation: fadeDown 1.2s ease both; }
+  .eyebrow { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 5px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 16px; }
+  .title { font-family: 'Cinzel', serif; font-size: clamp(44px, 10vw, 88px); font-weight: 400; color: var(--cream); letter-spacing: 6px; line-height: 1; margin-bottom: 12px; }
+  .subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(14px, 3vw, 18px); color: var(--muted); letter-spacing: 1px; }
+  .ornament { display: flex; align-items: center; gap: 14px; margin: 20px auto; width: 200px; }
+  .orn-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold-dim)); }
+  .orn-line.r { background: linear-gradient(to left, transparent, var(--gold-dim)); }
+  .orn-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
+  .video-wrap { width: 100%; max-width: 480px; position: relative; animation: fadeUp 1s ease 0.4s both; }
+  .video-frame { position: relative; width: 100%; border: 1px solid rgba(201,168,76,0.2); box-shadow: 0 0 0 1px rgba(201,168,76,0.08), 0 30px 80px rgba(0,0,0,0.8), 0 0 120px rgba(181,96,26,0.12); background: #0a0806; overflow: hidden; }
+  .video-frame::before { content: ''; position: absolute; top: 8px; left: 8px; width: 20px; height: 20px; border-top: 1px solid var(--gold-dim); border-left: 1px solid var(--gold-dim); z-index: 10; pointer-events: none; }
+  .video-frame::after { content: ''; position: absolute; bottom: 8px; right: 8px; width: 20px; height: 20px; border-bottom: 1px solid var(--gold-dim); border-right: 1px solid var(--gold-dim); z-index: 10; pointer-events: none; }
+  .corner-tr { position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; border-top: 1px solid var(--gold-dim); border-right: 1px solid var(--gold-dim); z-index: 10; pointer-events: none; }
+  .corner-bl { position: absolute; bottom: 8px; left: 8px; width: 20px; height: 20px; border-bottom: 1px solid var(--gold-dim); border-left: 1px solid var(--gold-dim); z-index: 10; pointer-events: none; }
+  video { width: 100%; display: block; aspect-ratio: 9/16; object-fit: cover; cursor: pointer; }
+  .play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(6,5,8,0.3); transition: opacity 0.4s ease; cursor: pointer; z-index: 5; }
+  .play-overlay.hidden { opacity: 0; pointer-events: none; }
+  .play-btn { width: 64px; height: 64px; border: 1px solid rgba(201,168,76,0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(6,5,8,0.6); transition: transform 0.3s ease, background 0.3s ease; }
+  .play-btn:hover { transform: scale(1.1); background: rgba(181,96,26,0.4); }
+  .play-btn svg { margin-left: 4px; }
+  .quote { text-align: center; margin-top: 32px; animation: fadeUp 1s ease 0.7s both; max-width: 380px; }
+  .quote-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(16px, 4vw, 20px); color: var(--cream); line-height: 1.7; font-weight: 300; letter-spacing: 0.5px; }
+  .quote-attr { margin-top: 14px; font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 4px; color: var(--gold-dim); text-transform: uppercase; }
+  .footer { margin-top: 48px; text-align: center; animation: fadeUp 1s ease 1s both; }
+  .footer-brand { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 5px; color: var(--gold-dim); text-transform: uppercase; opacity: 0.6; }
+  .footer-sub { margin-top: 6px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12px; color: var(--muted); opacity: 0.6; }
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 480px) { .video-wrap { max-width: 100%; } .page { padding: 32px 16px 48px; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="eyebrow">Vermelho Melides · Signature Collection</div>
+    <div class="title">Rota</div>
+    <div class="subtitle">Vasco da Gama · Calicut · 1498</div>
+    <div class="ornament">
+      <div class="orn-line"></div>
+      <div class="orn-diamond"></div>
+      <div class="orn-line r"></div>
+    </div>
+  </div>
+
+  <div class="video-wrap">
+    <div class="video-frame">
+      <div class="corner-tr"></div>
+      <div class="corner-bl"></div>
+      <!-- ⬇️ ЗАМІНИ Vasco_da_Gama_202604032249.mp4 на назву свого файлу -->
+      <video id="vid" playsinline preload="metadata">
+        <source src="Vasco_da_Gama_202604032249.mp4" type="video/mp4">
+      </video>
+      <div class="play-overlay" id="overlay">
+        <div class="play-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <polygon points="6,3 21,12 6,21" fill="#c9a84c"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote">
+    <div class="quote-text">"Enjoy my cocktail —<br>and discover your own route."</div>
+    <div class="quote-attr">— Vasco da Gama · 1498</div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-brand">Vermelho Melides · Relais &amp; Châteaux</div>
+    <div class="footer-sub">Alentejo, Portugal</div>
+  </div>
+</div>
+<script>
+  const vid = document.getElementById('vid');
+  const overlay = document.getElementById('overlay');
+  overlay.addEventListener('click', () => { vid.play(); overlay.classList.add('hidden'); });
+  vid.addEventListener('ended', () => { overlay.classList.remove('hidden'); });
+  vid.addEventListener('pause', () => { overlay.classList.remove('hidden'); });
+  vid.addEventListener('play', () => { overlay.classList.add('hidden'); });
+</script>
+</body>
+</html>
